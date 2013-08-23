@@ -1,0 +1,82 @@
+{% include "header.html" %}
+<script charset="utf-8">
+    $(function () {
+        var data = {{ data|safe}};
+        var update_time = "{{ update_time }}";
+        var xSiteid = new Array(10);
+        var yIncrease = new Array(10);
+        for(var i in data) {
+            xSiteid[i] = '<a target="_blank" href="http://site.douban.com/' + data[i][0] + '">' +data[i][0] + '</a>';
+            yIncrease[i] = data[i][3];
+        }
+        $('#holder').highcharts({
+            chart: {
+                type: 'bar'
+            },
+            title: {
+                text: '豆瓣音乐人增粉丝排行榜'
+            },
+            subtitle: {
+                text: '粉丝数据更新日期：' + update_time
+            },
+            xAxis: {
+                categories: xSiteid
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: '粉丝增加数'
+                },
+                labels: {
+                    overflow: 'justify'
+                }
+            },
+            legend: {
+                backgroundColor: '#EDF4ED',
+                reversed: true
+            },
+            series: [{
+                name: '增加粉丝数',
+                data: yIncrease,
+                dataLabels: {
+                    enabled: true,
+                    style: {
+                        fontSize: '13px',
+                        fontFamily: 'Verdana, sans-serif',
+                        textShadow: '0 0 3px black'
+                    }
+                }
+            }],
+            credits: {
+                enabled: true,
+                text: '摇滚地震局',
+                href: 'http://baidu.com'
+            }
+        });
+    });
+</script>
+<div class="container">
+    <div id="holder"></div>
+    <ul class="pagination pagination-centered">
+        {% if fans.has_previous %}
+            <li><span><a href="?page={{ fans.previous_page_number }}">&laquo;</a></span></li>
+        {% else %}
+            <li class="disabled"><span>&laquo;</span></li>
+        {% endif %}
+        {% for p in page_range %}
+            {% ifequal p fans.number %}
+                <li class="active">
+                    {% else %}
+                <li>
+            {% endifequal %}
+        <span><a href="?page={{ p }}">{{ p }}</a></span>
+        </li>
+        {% endfor %}
+        {% if fans.has_next %}
+            <li><span><a href="?page={{ fans.next_page_number }}">&raquo;</a></span></li>
+        {% else %}
+            <li class="disabled"><span>&raquo;</span></li>
+        {% endif %}
+    </ul>
+</div>
+{% include "footer.html" %}
